@@ -1,6 +1,9 @@
 package capydbclient
 
-import "time"
+import (
+	"encoding/json"
+	"time"
+)
 
 // This file holds the canonical Go representations of the control-plane entities
 // and request bodies that the CLI and the Terraform provider both consume. They
@@ -59,7 +62,11 @@ type Project struct {
 	PublicHost             string    `json:"public_host,omitempty"`
 	Region                 string    `json:"region"`
 	RoleName               string    `json:"role_name"`
-	Slug                   string    `json:"slug"`
+	// RuntimeStatus overlays the scale-to-zero lifecycle in customer
+	// vocabulary: "active", "paused", or "resuming". Empty while the database
+	// is provisioning or being deleted (see State).
+	RuntimeStatus string `json:"runtime_status,omitempty"`
+	Slug          string `json:"slug"`
 	SSLMode                string    `json:"ssl_mode,omitempty"`
 	State                  string    `json:"state"`
 	StatementTimeout       string    `json:"statement_timeout"`
@@ -87,8 +94,12 @@ type Job struct {
 	OrganizationID      string     `json:"organization_id"`
 	PreviewDatabaseID   string     `json:"preview_database_id,omitempty"`
 	ProjectID           string     `json:"project_id,omitempty"`
-	RetryClassification string     `json:"retry_classification,omitempty"`
-	StartedAt           *time.Time `json:"started_at,omitempty"`
+	RetryClassification string `json:"retry_classification,omitempty"`
+	// Result is the structured result payload of a completed job. The API
+	// returns it only for job types whose result is part of the product
+	// contract (currently project.import_follow_status).
+	Result    json.RawMessage `json:"result,omitempty"`
+	StartedAt *time.Time      `json:"started_at,omitempty"`
 	State               string     `json:"state"`
 	Type                string     `json:"type"`
 	UpdatedAt           time.Time  `json:"updated_at"`
