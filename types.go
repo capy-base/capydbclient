@@ -181,3 +181,92 @@ type CreateWebhookEndpointRequest struct {
 	EventTypes  []string `json:"event_types,omitempty"`
 	URL         string   `json:"url"`
 }
+
+// DatabaseSchema is the canonical schema document from GET
+// /v1/projects/{id}/schema (and its preview-database sibling): one
+// introspection pass covering schemas, tables, views, columns, constraints,
+// enums and extensions. It is the input contract for type generation and
+// schema diffing.
+type DatabaseSchema struct {
+	DatabaseName    string            `json:"database_name"`
+	Extensions      []SchemaExtension `json:"extensions"`
+	PostgresVersion string            `json:"postgres_version"`
+	Schemas         []SchemaNamespace `json:"schemas"`
+}
+
+// SchemaExtension is an installed Postgres extension.
+type SchemaExtension struct {
+	Name    string `json:"name"`
+	Version string `json:"version"`
+}
+
+// SchemaNamespace is one Postgres schema (namespace) with its relations and
+// enum types.
+type SchemaNamespace struct {
+	Enums  []SchemaEnum  `json:"enums"`
+	Name   string        `json:"name"`
+	Tables []SchemaTable `json:"tables"`
+}
+
+// SchemaEnum is a user-defined enum type.
+type SchemaEnum struct {
+	Comment string   `json:"comment,omitempty"`
+	Name    string   `json:"name"`
+	Values  []string `json:"values"`
+}
+
+// SchemaTable is a relation; Kind is one of table, partitioned_table, view,
+// materialized_view, foreign_table.
+type SchemaTable struct {
+	Columns           []SchemaColumn           `json:"columns"`
+	Comment           string                   `json:"comment,omitempty"`
+	ForeignKeys       []SchemaForeignKey       `json:"foreign_keys"`
+	Kind              string                   `json:"kind"`
+	Name              string                   `json:"name"`
+	PrimaryKey        []string                 `json:"primary_key"`
+	UniqueConstraints []SchemaUniqueConstraint `json:"unique_constraints"`
+}
+
+// SchemaColumn is one column of a relation. For array columns UDTName and
+// UDTSchema describe the element type.
+type SchemaColumn struct {
+	Comment     string `json:"comment,omitempty"`
+	DataType    string `json:"data_type"`
+	Default     string `json:"default,omitempty"`
+	Identity    string `json:"identity,omitempty"`
+	IsArray     bool   `json:"is_array"`
+	IsEnum      bool   `json:"is_enum"`
+	IsGenerated bool   `json:"is_generated"`
+	IsNullable  bool   `json:"is_nullable"`
+	Name        string `json:"name"`
+	Position    int    `json:"position"`
+	UDTName     string `json:"udt_name"`
+	UDTSchema   string `json:"udt_schema"`
+}
+
+// SchemaForeignKey is a foreign-key constraint.
+type SchemaForeignKey struct {
+	Columns           []string `json:"columns"`
+	Name              string   `json:"name"`
+	OnDelete          string   `json:"on_delete"`
+	OnUpdate          string   `json:"on_update"`
+	ReferencedColumns []string `json:"referenced_columns"`
+	ReferencedSchema  string   `json:"referenced_schema"`
+	ReferencedTable   string   `json:"referenced_table"`
+}
+
+// SchemaUniqueConstraint is a unique constraint.
+type SchemaUniqueConstraint struct {
+	Columns []string `json:"columns"`
+	Name    string   `json:"name"`
+}
+
+// GeneratedTypes is one generated source file from GET
+// /v1/projects/{id}/schema/types: TypeScript interfaces, Zod schemas or a
+// Drizzle schema rendered server-side from the live database schema.
+type GeneratedTypes struct {
+	Content  string `json:"content"`
+	Filename string `json:"filename"`
+	Language string `json:"language"`
+	Style    string `json:"style,omitempty"`
+}
