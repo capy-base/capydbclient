@@ -58,20 +58,23 @@ type Project struct {
 	OrganizationID         string    `json:"organization_id"`
 	Plan                   string    `json:"plan"`
 	PooledPort             int       `json:"pooled_port"`
-	PrimaryInstanceID      string    `json:"primary_instance_id,omitempty"`
-	PublicHost             string    `json:"public_host,omitempty"`
-	Region                 string    `json:"region"`
-	RoleName               string    `json:"role_name"`
+	// PostgresVersion is the major version of the project's database. Empty
+	// while the database is still provisioning.
+	PostgresVersion   string `json:"postgres_version,omitempty"`
+	PrimaryInstanceID string `json:"primary_instance_id,omitempty"`
+	PublicHost        string `json:"public_host,omitempty"`
+	Region            string `json:"region"`
+	RoleName          string `json:"role_name"`
 	// RuntimeStatus overlays the scale-to-zero lifecycle in customer
 	// vocabulary: "active", "paused", or "resuming". Empty while the database
 	// is provisioning or being deleted (see State).
-	RuntimeStatus string `json:"runtime_status,omitempty"`
-	Slug          string `json:"slug"`
-	SSLMode                string    `json:"ssl_mode,omitempty"`
-	State                  string    `json:"state"`
-	StatementTimeout       string    `json:"statement_timeout"`
-	StorageLimitBytes      int64     `json:"storage_limit_bytes"`
-	UpdatedAt              time.Time `json:"updated_at"`
+	RuntimeStatus     string    `json:"runtime_status,omitempty"`
+	Slug              string    `json:"slug"`
+	SSLMode           string    `json:"ssl_mode,omitempty"`
+	State             string    `json:"state"`
+	StatementTimeout  string    `json:"statement_timeout"`
+	StorageLimitBytes int64     `json:"storage_limit_bytes"`
+	UpdatedAt         time.Time `json:"updated_at"`
 }
 
 // Job is an asynchronous control-plane operation. Poll until State is
@@ -94,15 +97,15 @@ type Job struct {
 	OrganizationID      string     `json:"organization_id"`
 	PreviewDatabaseID   string     `json:"preview_database_id,omitempty"`
 	ProjectID           string     `json:"project_id,omitempty"`
-	RetryClassification string `json:"retry_classification,omitempty"`
+	RetryClassification string     `json:"retry_classification,omitempty"`
 	// Result is the structured result payload of a completed job. The API
 	// returns it only for job types whose result is part of the product
 	// contract (currently project.import_follow_status).
 	Result    json.RawMessage `json:"result,omitempty"`
 	StartedAt *time.Time      `json:"started_at,omitempty"`
-	State               string     `json:"state"`
-	Type                string     `json:"type"`
-	UpdatedAt           time.Time  `json:"updated_at"`
+	State     string          `json:"state"`
+	Type      string          `json:"type"`
+	UpdatedAt time.Time       `json:"updated_at"`
 }
 
 // ConnectionInfo is a project or preview database's connection endpoints.
@@ -148,8 +151,12 @@ type CreateProjectRequest struct {
 	Environment    string `json:"environment,omitempty"`
 	Name           string `json:"name"`
 	OrganizationID string `json:"organization_id,omitempty"`
-	Region         string `json:"region,omitempty"`
-	Slug           string `json:"slug,omitempty"`
+	// PostgresVersion picks the database's major version ("16", "17", "18").
+	// Omit for the platform default. Immutable after creation; previews and
+	// restores inherit it.
+	PostgresVersion string `json:"postgres_version,omitempty"`
+	Region          string `json:"region,omitempty"`
+	Slug            string `json:"slug,omitempty"`
 }
 
 // CreatePreviewRequest is the create-preview-database body.
