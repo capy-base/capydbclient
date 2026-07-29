@@ -146,6 +146,30 @@ type WebhookEndpoint struct {
 	URL            string    `json:"url"`
 }
 
+// WebhookDelivery is one delivery attempt record for a webhook endpoint. It is
+// returned by the delivery listing and by the test/redeliver actions (both of
+// which enqueue a fresh pending delivery).
+type WebhookDelivery struct {
+	Attempts       int        `json:"attempts"`
+	CreatedAt      time.Time  `json:"created_at"`
+	DeliveredAt    *time.Time `json:"delivered_at,omitempty"`
+	EndpointID     string     `json:"endpoint_id"`
+	EventType      string     `json:"event_type"`
+	ID             string     `json:"id"`
+	LastError      string     `json:"last_error,omitempty"`
+	MaxAttempts    int        `json:"max_attempts"`
+	NextAttemptAt  time.Time  `json:"next_attempt_at"`
+	OrganizationID string     `json:"organization_id"`
+	// Payload is the JSON event envelope that was (or will be) delivered.
+	Payload any `json:"payload"`
+	// ResponseStatus is the HTTP status of the last attempt; zero when no
+	// attempt has completed yet.
+	ResponseStatus int `json:"response_status,omitempty"`
+	// State is one of pending, delivered, or failed.
+	State     string    `json:"state"`
+	UpdatedAt time.Time `json:"updated_at"`
+}
+
 // CreateProjectRequest is the POST /v1/projects body.
 type CreateProjectRequest struct {
 	Environment    string `json:"environment,omitempty"`
