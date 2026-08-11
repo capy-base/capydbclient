@@ -258,7 +258,11 @@ type SchemaColumn struct {
 	ArrayDims   int    `json:"array_dims,omitempty"`
 	Comment     string `json:"comment,omitempty"`
 	DataType    string `json:"data_type"`
-	Default     string `json:"default,omitempty"`
+	Default string `json:"default,omitempty"`
+	// Generated is "stored" or "virtual" for generated columns, empty otherwise.
+	// Virtual generated columns exist only on Postgres 18+; on 16/17 every
+	// generated column is stored.
+	Generated   string `json:"generated,omitempty"`
 	Identity    string `json:"identity,omitempty"`
 	IsArray     bool   `json:"is_array"`
 	IsEnum      bool   `json:"is_enum"`
