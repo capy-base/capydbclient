@@ -255,10 +255,10 @@ type SchemaTable struct {
 // UDTSchema describe the element type.
 type SchemaColumn struct {
 	// ArrayDims is the declared array dimension count (>= 1 when IsArray).
-	ArrayDims   int    `json:"array_dims,omitempty"`
-	Comment     string `json:"comment,omitempty"`
-	DataType    string `json:"data_type"`
-	Default string `json:"default,omitempty"`
+	ArrayDims int    `json:"array_dims,omitempty"`
+	Comment   string `json:"comment,omitempty"`
+	DataType  string `json:"data_type"`
+	Default   string `json:"default,omitempty"`
 	// Generated is "stored" or "virtual" for generated columns, empty otherwise.
 	// Virtual generated columns exist only on Postgres 18+; on 16/17 every
 	// generated column is stored.
