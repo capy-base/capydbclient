@@ -9,7 +9,7 @@ import (
 // and request bodies that the CLI and the Terraform provider both consume. They
 // mirror the component schemas in backend/internal/httpapi/openapi.json (the
 // same source the TypeScript SDK is generated from) so the two Go clients share
-// one shape instead of each re-declaring — and drifting — their own copies.
+// one shape instead of each re-declaring - and drifting - their own copies.
 //
 // Response entities carry the full schema field set; a consumer that only reads
 // a subset simply ignores the rest. Date-time fields use time.Time (required)
