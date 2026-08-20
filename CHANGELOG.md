@@ -10,6 +10,8 @@ it, so a shape added here must match the spec exactly.
 
 ## [Unreleased]
 
+## [1.6.0] - 2026-08-20
+
 ### Added
 
 - The entity and request types the CLI had been re-declaring locally now live here, so the two Go
